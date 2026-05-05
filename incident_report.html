@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FORM4.Incident Report</title>
+    <style>
+        :root {
+            --primary: #0056b3; /* Professional blue for interactive elements */
+            --primary-hover: #004494;
+            --bg-color: #f4f5f7;
+            --card-bg: #ffffff;
+            --text-main: #000000;
+            --text-muted: #333333;
+            --border-color: #000000;
+            --error: #d9534f;
+            --success: #5cb85c;
+            --radius: 0px; /* Square edges for document feel */
+            --transition: all 0.2s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        /* Layout */
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            text-align: left;
+            border-bottom: 2px solid #000;
+            padding-bottom: 1rem;
+            padding-top: 2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #000;
+            margin-bottom: 0.25rem;
+        }
+
+        .header p {
+            color: #000;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        /* Form styling */
+        .form-section {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 1rem 0;
+            margin-bottom: 1rem;
+        }
+
+        .part-header {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            background-color: #e6e6e6;
+            border: 1px solid #000;
+            color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-transform: uppercase;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .grid-2 { grid-template-columns: repeat(2, 1fr); }
+        .grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+            font-size: 0.95rem;
+            color: var(--text-main);
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="time"],
+        input[type="tel"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #aaa;
+            border-radius: var(--radius);
+            font-family: inherit;
+            font-size: 1rem;
+            background-color: #fff;
+            outline: none;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(0, 86, 179, 0.2);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0;
+            cursor: pointer;
+        }
+
+        .checkbox-item input[type="checkbox"],
+        .checkbox-item input[type="radio"] {
+            width: 1rem;
+            height: 1rem;
+            cursor: pointer;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 1rem;
+            border: 1px solid #000;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+            background: #e6e6e6;
+            color: #000;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            margin-top: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Dynamic list styling */
+        .dynamic-list {
+            list-style: none;
+        }
+        .dynamic-list li {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            align-items: center;
+        }
+        .dynamic-list input {
+            flex: 1;
+            margin-bottom: 0;
+        }
+        .btn-remove {
+            background: var(--error);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        /* Conditional Section */
+        .conditional-section {
+            display: none;
+            padding: 1rem;
+            border: 1px solid #000;
+            margin-top: 0.5rem;
+        }
+        .conditional-section.active {
+            display: block;
+        }
+
+        @media screen {
+            .print-textarea { display: none !important; }
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                background: white;
+                font-size: 11pt;
+                line-height: 1.3;
+            }
+            .container {
+                max-width: 100%;
+                margin: 0;
+                padding: 0;
+                box-shadow: none;
+            }
+            .header {
+                padding-top: 0;
+                margin-bottom: 1rem;
+                padding-bottom: 0.5rem;
+            }
+            .form-section {
+                padding: 0.25rem 0;
+                margin-bottom: 0.25rem;
+            }
+            .section-title {
+                font-size: 10pt;
+                margin-bottom: 0.5rem;
+                padding: 0.2rem 0.5rem;
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+                background-color: #e6e6e6 !important;
+            }
+            .form-group {
+                margin-bottom: 0.5rem;
+            }
+            label {
+                font-size: 10pt;
+                margin-bottom: 0.1rem;
+            }
+            .btn, .no-print {
+                display: none !important;
+            }
+            input, select {
+                border: none;
+                border-bottom: 1px solid #000;
+                border-radius: 0;
+                padding: 0.1rem 0;
+                background: transparent;
+                font-size: 11pt;
+            }
+            textarea {
+                display: none !important;
+            }
+            .print-textarea {
+                display: block !important;
+                white-space: pre-wrap;
+                word-wrap: break-word;
+                border: 1px solid #ccc;
+                padding: 0.25rem;
+                min-height: 20px;
+                font-family: inherit;
+                font-size: 11pt;
+                page-break-inside: auto;
+                margin-bottom: 0.25rem;
+            }
+            .notice-box {
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+                background-color: #fff200 !important;
+                padding: 0.5rem;
+                margin-top: 0.5rem;
+                font-size: 10pt;
+            }
+            h3 {
+                margin: 0.5rem 0 0.25rem 0 !important;
+                font-size: 11pt;
+            }
+            .part-header {
+                margin-top: 0.5rem !important;
+                margin-bottom: 0.25rem;
+                font-size: 11pt;
+            }
+            .checkbox-group {
+                gap: 0.5rem;
+                margin-top: 0.25rem;
+            }
+            .checkbox-item {
+                padding: 0.1rem 0;
+            }
+            table th, table td {
+                padding: 0.2rem !important;
+                font-size: 10pt;
+            }
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 20px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 20px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 14px;
+            width: 14px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: var(--primary);
+        }
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Mic Button */
+        .btn-mic {
+            background: #eef2ff;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            border-radius: 4px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            margin-left: auto;
+            font-weight: normal;
+        }
+        .btn-mic.recording {
+            background: #fee2e2;
+            color: #ef4444;
+            border-color: #ef4444;
+        }
+
+        /* Notice Box */
+        .notice-box {
+            background-color: #fff200;
+            color: #000;
+            border: 2px solid #000;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div>
+            <h1>FORM4.Incident Report</h1>
+            <p>Doc No: Form04</p>
+        </div>
+        <div style="text-align: right;">
+            <p>Version No: 01</p>
+            <p>Version Date: 01/07/2024</p>
+        </div>
+    </div>
+
+    <form id="incidentForm" onsubmit="generateReport(event)">
+        <!-- PART A -->
+        <div class="form-section">
+            <div class="part-header">PART A: To be completed by the Authorised Notifier</div>
+            <h2 class="section-title">1. LOCATION & TIME DETAILS OF INCIDENT / ACCIDENT</h2>
+            
+            <div class="grid">
+                <div class="form-group">
+                    <label>Date of Incident <span style="color:var(--error)">*</span></label>
+                    <input type="date" id="incDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Time of Incident <span style="color:var(--error)">*</span></label>
+                    <input type="time" id="incTime" required>
+                </div>
+                <div class="form-group">
+                    <label>Area (e.g. In House, Living area)</label>
+                    <input type="text" id="incArea">
+                </div>
+            </div>
+
+            <div class="form-group full-width">
+                <label>The exact location of the incident:</label>
+                <div class="grid grid-3" style="margin-top: 0.25rem;">
+                    <input type="text" id="locStreet" placeholder="Street">
+                    <input type="text" id="locSuburb" placeholder="Suburb">
+                    <input type="text" id="locState" placeholder="State">
+                </div>
+            </div>
+
+            <div class="grid grid-3">
+                <div class="form-group">
+                    <label>Person Reporting <span style="color:var(--error)">*</span></label>
+                    <input type="text" id="personReporting" required>
+                </div>
+                <div class="form-group">
+                    <label>Reported To <span style="color:var(--error)">*</span></label>
+                    <input type="text" id="reportedTo" required>
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="reporterStatus">
+                        <option value="Worker">Worker</option>
+                        <option value="Participant">Participant</option>
+                        <option value="Visitor">Visitor</option>
+                        <option value="Public">Public</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h2 class="section-title">2. DESCRIPTION OF INCIDENT (Attach further information if required)</h2>
+            
+            <div class="form-group full-width">
+                <label class="flex-between">
+                    <span>Give a full description of the incident: <span style="color:var(--error)">*</span></span>
+                    <button type="button" class="btn-mic no-print" onclick="toggleSpeechToText('incDescription', this)" title="Start Dictation">🎤 Dictate</button>
+                </label>
+                <textarea id="incDescription" required></textarea>
+            </div>
+            
+            <div class="form-group full-width">
+                <label class="flex-between">
+                    <span>How was the injury or damage sustained? (e.g., slipped on wet ground)</span>
+                    <button type="button" class="btn-mic no-print" onclick="toggleSpeechToText('incMechanism', this)" title="Start Dictation">🎤 Dictate</button>
+                </label>
+                <textarea id="incMechanism"></textarea>
+            </div>
+
+            <h3 style="font-size: 1.05rem; font-weight: bold; margin: 1rem 0 0.5rem 0;">3. Consultation with the participant</h3>
+            <div class="form-group full-width">
+                <label class="flex-between" style="font-weight: normal; font-style: italic;">
+                    <span>Detail any discussions or reassurance provided.</span>
+                    <button type="button" class="btn-mic no-print" onclick="toggleSpeechToText('incConsultation', this)" title="Start Dictation">🎤 Dictate</button>
+                </label>
+                <textarea id="incConsultation"></textarea>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h2 class="section-title">4. NATURE OF INCIDENT</h2>
+            <div class="checkbox-group" id="natureOfIncident">
+                <label class="checkbox-item"><input type="checkbox" value="Injury-Medical Treatment"> Injury–Medical Treatment</label>
+                <label class="checkbox-item"><input type="checkbox" value="Injury-Hospitalisation"> Injury–Hospitalisation</label>
+                <label class="checkbox-item"><input type="checkbox" value="Sexual or Physical assault"> Sexual or Physical assault</label>
+                <label class="checkbox-item"><input type="checkbox" value="Death"> Death</label>
+                <label class="checkbox-item"><input type="checkbox" value="Abuse or neglect"> Abuse or neglect</label>
+                <label class="checkbox-item"><input type="checkbox" value="Unauthorised use of restrictive practice"> Unauthorised use of restrictive practice</label>
+                <label class="checkbox-item"><input type="checkbox" value="Injury-First Aid Treatment"> Injury–First Aid Treatment</label>
+                <label class="checkbox-item"><input type="checkbox" value="Waste incident"> Waste incident</label>
+                <label class="checkbox-item"><input type="checkbox" value="Restricted Work"> Restricted Work</label>
+                <label class="checkbox-item"><input type="checkbox" value="Medication Incident"> Medication Incident</label>
+                <label class="checkbox-item"><input type="checkbox" value="Other"> Other</label>
+            </div>
+            <input type="text" id="natureOther" placeholder="Specify other..." style="margin-top: 0.5rem; display: none;">
+
+            <div class="notice-box">
+                <strong>Immediately report any incident where the yellow box to NDIS Commission is ticked. For more information, read below:</strong><br><br>
+                The following incidents (including allegations) arising must be reported to the NDIS Commission:
+                <ul style="margin-top: 0.5rem; margin-left: 2rem;">
+                    <li>the death of an NDIS participant</li>
+                    <li>serious injury of an NDIS participant</li>
+                    <li>abuse or neglect of an NDIS participant</li>
+                    <li>unlawful sexual or physical contact with, or assault of, an NDIS participant</li>
+                    <li>sexual misconduct committed against, or in the presence of, an NDIS participant, including grooming of the NDIS participant for sexual activity</li>
+                    <li>the unauthorised use of restrictive practice to an NDIS participant</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Dynamic Injury Section -->
+        <div class="form-section">
+            <h2 class="section-title flex-between" style="margin-bottom: 0;">
+                <span>5. INJURY INFORMATION (If more than one add more sheets) – Nil Injury</span>
+                <div style="display: flex; align-items: center; gap: 0.5rem; text-transform: none; font-size: 0.9rem;">
+                    <span style="font-weight: normal;">Injury occurred?</span>
+                    <label class="toggle-switch no-print">
+                        <input type="checkbox" id="injuryToggle" onchange="toggleSection('injurySection', this.checked)">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </h2>
+
+            <div id="injurySection" class="conditional-section">
+                <div class="grid grid-3">
+                    <div class="form-group"><label>Name:</label><input type="text" id="injName"></div>
+                    <div class="form-group"><label>Job Title:</label><input type="text" id="injRole"></div>
+                    <div class="form-group">
+                        <label>Status:</label>
+                        <select id="injStatus">
+                            <option value="Participant">Participant</option>
+                            <option value="Worker">Worker</option>
+                            <option value="Visitor">Visitor</option>
+                            <option value="Public">Public</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="grid grid-2">
+                    <div class="form-group">
+                        <label>Body Part:</label>
+                        <select id="injBodyPart">
+                            <option value="">Select...</option>
+                            <option value="Head/Brain">Head or Brain</option>
+                            <option value="Eye/Facial">Eye or Facial</option>
+                            <option value="Neck">Neck</option>
+                            <option value="Shoulders">Shoulders</option>
+                            <option value="Arm">Arm</option>
+                            <option value="Hands/Fingers">Hands & Fingers</option>
+                            <option value="Back">Back</option>
+                            <option value="Abdomen">Abdomen</option>
+                            <option value="Hip">Hip</option>
+                            <option value="Leg">Leg</option>
+                            <option value="Feet/Toes">Feet & Toes</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Nature of Injury:</label>
+                        <select id="injNature">
+                            <option value="">Select...</option>
+                            <option value="Laceration">Laceration</option>
+                            <option value="Abrasion">Abrasion</option>
+                            <option value="Bruising">Bruising</option>
+                            <option value="Strains/Sprains">Strains/Sprains</option>
+                            <option value="Fracture">Fracture</option>
+                            <option value="Crush Injury">Crush Injury</option>
+                            <option value="Burns">Burns</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Caused by:</label>
+                    <input type="text" id="injCause">
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Full name of the first Aider (if applicable):</label>
+                    <input type="text" id="firstAider">
+                </div>
+
+                <div class="form-group full-width">
+                    <label class="flex-between">
+                        <span>Description of first aid treatment:</span>
+                        <button type="button" class="btn-mic no-print" onclick="toggleSpeechToText('firstAidTreatment', this)" title="Start Dictation">🎤 Dictate</button>
+                    </label>
+                    <textarea id="firstAidTreatment"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h2 class="section-title flex-between">
+                <span>6. PROPERTY DAMAGE (Including environmental impacts)</span>
+                <button type="button" class="btn-mic no-print" onclick="toggleSpeechToText('propDamage', this)" title="Start Dictation" style="font-size: 0.9rem; margin-top: 0;">🎤 Dictate</button>
+            </h2>
+            <div class="form-group full-width">
+                <label>Description of Damage:</label>
+                <textarea id="propDamage"></textarea>
+            </div>
+        </div>
+
+        <!-- PART B: SUPERVISOR -->
+        <div class="form-section">
+            <div class="part-header" style="margin-top: 2rem;">PART B To be completed by Supervisor or safety representative</div>
+            <h2 class="section-title">1. SUPERVISOR</h2>
+            
+            <div class="grid grid-3">
+                <div class="form-group"><label>Name</label><input type="text" id="supName"></div>
+                <div class="form-group"><label>Position</label><input type="text" id="supPosition" value="House Manager"></div>
+                <div class="form-group"><label>Mobile/Phone</label><input type="tel" id="supMobile"></div>
+                <div class="form-group"><label>Date Received</label><input type="date" id="supDate"></div>
+                <div class="form-group"><label>Time Received</label><input type="time" id="supTime"></div>
+            </div>
+
+            <h2 class="section-title" style="margin-top: 2rem;">2. WHAT FACTORS CONTRIBUTED TO THE INCIDENT (Root cause and contributing factors)?</h2>
+            <div class="form-group full-width">
+                <div class="checkbox-group">
+                    <label class="checkbox-item"><input type="checkbox" class="factor-cb" value="Supervision"> Supervision</label>
+                    <label class="checkbox-item"><input type="checkbox" class="factor-cb" value="Training & Competence"> Training & Competence</label>
+                    <label class="checkbox-item"><input type="checkbox" class="factor-cb" value="Work Procedures"> Work Procedures</label>
+                    <label class="checkbox-item"><input type="checkbox" class="factor-cb" value="PPE"> PPE</label>
+                    <label class="checkbox-item"><input type="checkbox" class="factor-cb" value="Other"> Other</label>
+                </div>
+            </div>
+
+            <h2 class="section-title" style="margin-top: 2rem;">3. CORRECTIVE ACTIONS (What has been done to correct the situation? – short term fix)</h2>
+            <div class="form-group full-width">
+                <label class="flex-between">
+                    <span>Actions</span>
+                    <button type="button" class="btn btn-outline no-print" onclick="addListItem('correctiveList')" style="padding: 0.25rem 0.5rem; font-size: 0.8rem;">+ Add Action</button>
+                </label>
+                <ol id="correctiveList" class="dynamic-list" style="margin-left: 1rem;">
+                    <li><input type="text" placeholder="..."><button type="button" class="btn-remove no-print" onclick="this.parentElement.remove(); saveDraft();">×</button></li>
+                </ol>
+            </div>
+
+            <h2 class="section-title" style="margin-top: 2rem;">4. PREVENTION STRATEGY (What actions can be taken to reduce the risk of reoccurrence? – long term fix)</h2>
+            <div class="form-group full-width">
+                <label class="flex-between">
+                    <span>Strategies</span>
+                    <button type="button" class="btn btn-outline no-print" onclick="addListItem('preventionList')" style="padding: 0.25rem 0.5rem; font-size: 0.8rem;">+ Add Strategy</button>
+                </label>
+                <ol id="preventionList" class="dynamic-list" style="margin-left: 1rem;">
+                    <li><input type="text" placeholder="..."><button type="button" class="btn-remove no-print" onclick="this.parentElement.remove(); saveDraft();">×</button></li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- PART C: NOTIFICATIONS & ACTION PLAN -->
+        <div class="form-section">
+            <div class="part-header" style="margin-top: 2rem;">PART C</div>
+            <h2 class="section-title">1. NOTIFICATIONS</h2>
+            
+            <div class="grid grid-2">
+                <div class="form-group">
+                    <label>Notifiable Incident?</label>
+                    <select id="isNotifiable">
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Authority Notified</label>
+                    <input type="text" id="authNotified">
+                </div>
+                <div class="form-group">
+                    <label>Date Report Received</label>
+                    <input type="date" id="reportRecDate">
+                </div>
+                <div class="form-group">
+                    <label>Time Received</label>
+                    <input type="time" id="reportRecTime">
+                </div>
+            </div>
+
+            <h2 class="section-title" style="margin-top: 2rem;">2. INCIDENT CLASSIFICATION</h2>
+            <div class="form-group full-width">
+                <div class="checkbox-group">
+                    <label class="checkbox-item"><input type="radio" name="incClass" value="Catastrophic"> Catastrophic</label>
+                    <label class="checkbox-item"><input type="radio" name="incClass" value="Major"> Major</label>
+                    <label class="checkbox-item"><input type="radio" name="incClass" value="Moderate"> Moderate</label>
+                    <label class="checkbox-item"><input type="radio" name="incClass" value="Minor"> Minor</label>
+                    <label class="checkbox-item"><input type="radio" name="incClass" value="Insignificant"> Insignificant</label>
+                </div>
+            </div>
+
+            <h2 class="section-title" style="margin-top: 2rem;">3. ACTION PLAN (What systemic actions need to be put in place to prevent a recurrence?)</h2>
+            <div class="form-group full-width">
+                <div style="text-align: right; margin-bottom: 0.5rem;">
+                    <button type="button" class="btn btn-outline no-print" onclick="addActionPlan()" style="padding: 0.25rem 0.5rem; font-size: 0.8rem;">+ Add Row</button>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; text-align: left; border-collapse: collapse;" id="actionPlanTable">
+                        <thead>
+                            <tr style="border-bottom: 2px solid #000; background: #f9f9f9;">
+                                <th style="padding: 0.5rem; border: 1px solid #ccc;">Specific Action Required</th>
+                                <th style="padding: 0.5rem; width: 25%; border: 1px solid #ccc;">Person/Position Responsible</th>
+                                <th style="padding: 0.5rem; width: 20%; border: 1px solid #ccc;">Target Date</th>
+                                <th style="width: 40px; border: 1px solid #ccc;" class="no-print"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="border: 1px solid #ccc;"><input type="text" style="border:none;"></td>
+                                <td style="border: 1px solid #ccc;"><input type="text" style="border:none;"></td>
+                                <td style="border: 1px solid #ccc;"><input type="date" style="border:none;"></td>
+                                <td style="border: 1px solid #ccc; text-align: center;" class="no-print"><button type="button" class="btn-remove" onclick="this.parentElement.parentElement.remove(); saveDraft();">×</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <h2 class="section-title" style="margin-top: 2rem;">4. DOES THE RISK ASSESSMENT NEED TO BE REVIEWED AS A RESULT OF THIS INCIDENT?</h2>
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <label class="checkbox-item"><input type="radio" name="riskReview" value="Yes"> YES</label>
+                    <label class="checkbox-item"><input type="radio" name="riskReview" value="No"> NO</label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <div class="part-header" style="margin-top: 2rem;">PART D - REVIEW OF THE INCIDENT by Managing Director/ Management Team</div>
+            <div class="grid grid-2" style="margin-top: 1rem;">
+                <div class="form-group"><label>Name</label><input type="text" id="reviewerName"></div>
+                <div class="form-group"><label>Signature (Type Name or Sign digitally)</label><input type="text" id="reviewerSignature"></div>
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 1rem; margin-bottom: 2rem; margin-top: 1rem;" class="no-print">
+            <button type="submit" class="btn btn-primary" style="margin-bottom: 0; margin-top: 0; flex: 3;">Generate & Print Report</button>
+            <button type="button" class="btn btn-outline" style="flex: 1;" onclick="clearDraft()">Clear Form</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Form Draft Logic
+    const DRAFT_KEY = 'incidentFormDraft';
+
+    function saveDraft() {
+        const draft = { inputs: {}, radios: {}, checkboxes: { nature: [], factor: [] }, lists: { correctiveList: [], preventionList: [], actionPlanTable: [] } };
+
+        document.querySelectorAll('input[id], select[id], textarea[id]').forEach(el => {
+            draft.inputs[el.id] = el.type === 'checkbox' ? el.checked : el.value;
+        });
+
+        document.querySelectorAll('input[type="radio"]:checked').forEach(el => {
+            draft.radios[el.name] = el.value;
+        });
+
+        document.querySelectorAll('#natureOfIncident input[type="checkbox"]:checked').forEach(el => draft.checkboxes.nature.push(el.value));
+        document.querySelectorAll('.factor-cb:checked').forEach(el => draft.checkboxes.factor.push(el.value));
+
+        document.querySelectorAll('#correctiveList input[type="text"]').forEach(el => { if(el.value) draft.lists.correctiveList.push(el.value); });
+        document.querySelectorAll('#preventionList input[type="text"]').forEach(el => { if(el.value) draft.lists.preventionList.push(el.value); });
+
+        document.querySelectorAll('#actionPlanTable tbody tr').forEach(tr => {
+            const inputs = tr.querySelectorAll('input');
+            if(inputs.length === 3 && (inputs[0].value || inputs[1].value || inputs[2].value)) {
+                draft.lists.actionPlanTable.push({ action: inputs[0].value, who: inputs[1].value, date: inputs[2].value });
+            }
+        });
+
+        localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+    }
+
+    function loadDraft() {
+        const draftData = localStorage.getItem(DRAFT_KEY);
+        if (!draftData) return false;
+        
+        try {
+            const draft = JSON.parse(draftData);
+            
+            if (draft.inputs) {
+                Object.keys(draft.inputs).forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) {
+                        if (el.type === 'checkbox') {
+                            el.checked = draft.inputs[id];
+                            if (id === 'injuryToggle') toggleSection('injurySection', el.checked);
+                        } else {
+                            el.value = draft.inputs[id];
+                        }
+                    }
+                });
+            }
+
+            if (draft.radios) {
+                Object.keys(draft.radios).forEach(name => {
+                    const radio = document.querySelector(`input[type="radio"][name="${name}"][value="${draft.radios[name]}"]`);
+                    if (radio) radio.checked = true;
+                });
+            }
+
+            if (draft.checkboxes) {
+                (draft.checkboxes.nature || []).forEach(val => {
+                    const cb = document.querySelector(`#natureOfIncident input[type="checkbox"][value="${val}"]`);
+                    if (cb) { cb.checked = true; cb.dispatchEvent(new Event('change')); }
+                });
+                (draft.checkboxes.factor || []).forEach(val => {
+                    const cb = document.querySelector(`.factor-cb[value="${val}"]`);
+                    if (cb) cb.checked = true;
+                });
+            }
+
+            if (draft.lists) {
+                const populateList = (id, items) => {
+                    if (!items || items.length === 0) return;
+                    const ul = document.getElementById(id);
+                    ul.innerHTML = '';
+                    items.forEach(val => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `<input type="text" value="${val}" placeholder="..."><button type="button" class="btn-remove no-print" onclick="this.parentElement.remove(); saveDraft();">×</button>`;
+                        ul.appendChild(li);
+                    });
+                };
+                populateList('correctiveList', draft.lists.correctiveList);
+                populateList('preventionList', draft.lists.preventionList);
+
+                if (draft.lists.actionPlanTable && draft.lists.actionPlanTable.length > 0) {
+                    const tbody = document.querySelector('#actionPlanTable tbody');
+                    tbody.innerHTML = '';
+                    draft.lists.actionPlanTable.forEach(row => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td style="border: 1px solid #ccc;"><input type="text" value="${row.action}" style="border:none;"></td>
+                            <td style="border: 1px solid #ccc;"><input type="text" value="${row.who}" style="border:none;"></td>
+                            <td style="border: 1px solid #ccc;"><input type="date" value="${row.date}" style="border:none;"></td>
+                            <td style="border: 1px solid #ccc; text-align: center;" class="no-print"><button type="button" class="btn-remove" onclick="this.parentElement.parentElement.remove(); saveDraft();">×</button></td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+            }
+            return true;
+        } catch (e) {
+            console.error("Error loading draft", e);
+            return false;
+        }
+    }
+
+    function clearDraft() {
+        if(confirm("Are you sure you want to clear all form data?")) {
+            localStorage.removeItem(DRAFT_KEY);
+            window.location.reload();
+        }
+    }
+
+    // Auto-set current date and time for faster data entry
+    document.addEventListener("DOMContentLoaded", () => {
+        // Listen to 'Other' checkbox in Nature of Incident
+        const checkboxes = document.querySelectorAll('#natureOfIncident input[type="checkbox"]');
+        const otherInput = document.getElementById('natureOther');
+        
+        checkboxes.forEach(cb => {
+            cb.addEventListener('change', (e) => {
+                if(e.target.value === 'Other') {
+                    otherInput.style.display = e.target.checked ? 'block' : 'none';
+                    if(e.target.checked) otherInput.focus();
+                }
+            });
+        });
+
+        // Attempt to load draft. If no draft, set default times.
+        if (!loadDraft()) {
+            const now = new Date();
+            const dateString = now.toISOString().split('T')[0];
+            const timeString = now.toTimeString().substring(0, 5);
+            
+            document.getElementById('incDate').value = dateString;
+            document.getElementById('incTime').value = timeString;
+            document.getElementById('supDate').value = dateString;
+            document.getElementById('supTime').value = timeString;
+        }
+
+        // Attach save listeners
+        document.addEventListener('input', saveDraft);
+        document.addEventListener('change', saveDraft);
+    });
+
+    function toggleSection(id, isVisible) {
+        const section = document.getElementById(id);
+        if (isVisible) {
+            section.classList.add('active');
+        } else {
+            section.classList.remove('active');
+            const inputs = section.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => input.value = '');
+        }
+    }
+
+    function addListItem(listId) {
+        const ul = document.getElementById(listId);
+        const li = document.createElement('li');
+        li.innerHTML = `<input type="text" placeholder="..."><button type="button" class="btn-remove no-print" onclick="this.parentElement.remove(); saveDraft();">×</button>`;
+        ul.appendChild(li);
+        li.querySelector('input').focus();
+        saveDraft();
+    }
+
+    function addActionPlan() {
+        const tbody = document.querySelector('#actionPlanTable tbody');
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td style="border: 1px solid #ccc;"><input type="text" style="border:none;"></td>
+            <td style="border: 1px solid #ccc;"><input type="text" style="border:none;"></td>
+            <td style="border: 1px solid #ccc;"><input type="date" style="border:none;"></td>
+            <td style="border: 1px solid #ccc; text-align: center;" class="no-print"><button type="button" class="btn-remove" onclick="this.parentElement.parentElement.remove(); saveDraft();">×</button></td>
+        `;
+        tbody.appendChild(tr);
+        saveDraft();
+    }
+
+    function generateReport(e) {
+        e.preventDefault();
+        const btn = document.querySelector('.btn-primary');
+        const originalText = btn.innerText;
+        btn.innerText = 'Preparing Document...';
+        
+        // Gold Standard Fix for PDF generation:
+        // Textareas are notorious for cutting off text and failing to break across pages in PDFs.
+        // We create a temporary <div> with the exact text, which prints perfectly.
+        document.querySelectorAll('.print-textarea').forEach(el => el.remove());
+        document.querySelectorAll('textarea').forEach(tx => {
+            const div = document.createElement('div');
+            div.className = 'print-textarea';
+            div.textContent = tx.value;
+            tx.parentNode.insertBefore(div, tx.nextSibling);
+        });
+
+        setTimeout(() => {
+            window.print();
+            btn.innerText = originalText;
+        }, 800);
+    }
+
+    // Auto-resize textareas during typing
+    document.addEventListener('input', function(e) {
+        if(e.target.tagName.toLowerCase() === 'textarea') {
+            e.target.style.height = 'auto';
+            e.target.style.height = (e.target.scrollHeight) + 'px';
+        }
+    });
+
+    // --- Speech to Text logic ---
+    let recognition = null;
+    let activeMicBtn = null;
+    let originalText = '';
+
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRecognition();
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        recognition.lang = 'en-AU';
+
+        recognition.onresult = function(event) {
+            let finalTranscript = '';
+            let interimTranscript = '';
+            
+            for (let i = event.resultIndex; i < event.results.length; ++i) {
+                if (event.results[i].isFinal) {
+                    finalTranscript += event.results[i][0].transcript;
+                } else {
+                    interimTranscript += event.results[i][0].transcript;
+                }
+            }
+            
+            if (activeMicBtn) {
+                const targetId = activeMicBtn.getAttribute('data-target');
+                const targetInput = document.getElementById(targetId);
+                
+                if (finalTranscript) {
+                    originalText += finalTranscript;
+                    if (!originalText.endsWith(' ')) {
+                        originalText += ' ';
+                    }
+                }
+                
+                targetInput.value = originalText + interimTranscript;
+            }
+        };
+
+        recognition.onerror = function(event) {
+            console.error('Speech recognition error', event.error);
+            if(event.error === 'not-allowed') {
+                alert("Microphone access was denied. Please allow microphone permissions in your browser.");
+            }
+        };
+
+        recognition.onend = function() {
+            if (activeMicBtn) {
+                activeMicBtn.classList.remove('recording');
+                activeMicBtn.innerHTML = '🎤 Dictate';
+                activeMicBtn = null;
+            }
+        };
+    } else {
+        console.warn("Speech recognition not supported in this browser.");
+    }
+
+    function toggleSpeechToText(targetId, btnElement) {
+        if (!recognition) {
+            alert("Speech recognition is not supported in your browser. Please use Chrome, Edge, or Safari.");
+            return;
+        }
+
+        if (activeMicBtn === btnElement) {
+            try { recognition.stop(); } catch (e) {}
+        } else {
+            if (activeMicBtn) {
+                try { recognition.stop(); } catch (e) {}
+            }
+            
+            activeMicBtn = btnElement;
+            activeMicBtn.classList.add('recording');
+            activeMicBtn.innerHTML = '🛑 Stop';
+            activeMicBtn.setAttribute('data-target', targetId);
+            
+            const targetInput = document.getElementById(targetId);
+            originalText = targetInput.value;
+            if (originalText && !originalText.endsWith(' ') && !originalText.endsWith('\n')) {
+                originalText += ' ';
+            }
+
+            try {
+                recognition.start();
+            } catch (e) {
+                console.error("Recognition already started", e);
+            }
+        }
+    }
+</script>
+</body>
+</html>
