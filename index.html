@@ -277,22 +277,24 @@
             .grid-2, .grid-3, .grid-4 {
                 grid-template-columns: 1fr;
             }
-            .header {
-                flex-direction: column !important;
-            }
-            .header > div {
+            .form-header-table, .form-header-table tbody, .form-header-table tr, .form-header-table td {
+                display: block !important;
                 width: 100% !important;
+            }
+            .form-header-table td:first-child {
+                border-bottom: 2px solid #000;
+                text-align: center !important;
+                padding: 1rem 0 !important;
+            }
+            .form-header-table img {
+                margin: 0 auto;
+            }
+            .form-header-table td:last-child {
                 border-left: none !important;
                 padding: 1rem !important;
+                height: auto !important;
             }
-            .header > div:first-child {
-                border-bottom: 2px solid #000;
-                justify-content: center !important;
-            }
-            .header > div:last-child {
-                position: static !important;
-            }
-            .header > div:last-child > div {
+            .form-header-table td:last-child > div {
                 position: static !important;
                 text-align: center !important;
                 margin-bottom: 0.5rem;
@@ -528,33 +530,34 @@
                 <thead style="display: table-header-group;">
                     <tr>
                         <td style="border: none; padding: 0; padding-bottom: 1rem;">
-                            <div class="header" style="display: flex; align-items: stretch; border: 2px solid #000;">
-                                <!-- Left: Logo -->
-                                <div
-                                    style="flex: 0 0 auto; padding: 0; display: flex; align-items: center; justify-content: flex-start;">
-                                    <img src="logo-brightsupport.png" alt="Bright Support Logo"
-                                        style="max-width: 280px; max-height: 130px; object-fit: contain; display: block;">
-                                </div>
+                            <table class="form-header-table" style="width: 100%; border: 2px solid #000; border-collapse: collapse; margin-bottom: 2rem;">
+                                <tbody>
+                                    <tr>
+                                        <!-- Left: Logo -->
+                                        <td style="width: 280px; padding: 0; vertical-align: middle; text-align: left;">
+                                            <img src="logo-brightsupport.png" alt="Bright Support Logo"
+                                                style="max-width: 280px; max-height: 130px; object-fit: contain; display: inline-block;">
+                                        </td>
 
-                                <!-- Right: Form Info in colored box -->
-                                <div
-                                    style="position: relative; flex: 1; background-color: #8EAADB; padding: 0 1rem; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; border-left: 2px solid #000; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+                                        <!-- Right: Form Info in colored box -->
+                                        <td style="position: relative; background-color: #8EAADB; padding: 0 1rem; vertical-align: middle; text-align: center; border-left: 2px solid #000; -webkit-print-color-adjust: exact; print-color-adjust: exact; height: 130px;">
+                                            <div
+                                                style="position: absolute; top: 0.25rem; left: 0.5rem; font-size: 0.8rem; font-weight: bold; color: #000; text-align: left;">
+                                                Provider No: 4050129820<br>
+                                                ABN: 32 659 000 978
+                                            </div>
 
-                                    <div
-                                        style="position: absolute; top: 0.25rem; left: 0.5rem; font-size: 0.8rem; font-weight: bold; color: #000; text-align: left;">
-                                        Provider No: 4050129820<br>
-                                        ABN: 32 659 000 978
-                                    </div>
+                                            <h1 style="font-size: 1.5rem; margin-bottom: 0; margin-top: 0; color: #000;">
+                                                FORM 4 - Incident Report</h1>
 
-                                    <h1 style="font-size: 1.5rem; margin-bottom: 0; margin-top: 0; color: #000;">
-                                        FORM 4 - Incident Report</h1>
-
-                                    <div
-                                        style="position: absolute; bottom: 0.25rem; right: 0.5rem; font-size: 0.8rem; font-weight: bold; color: #000;">
-                                        Version Date: 01/07/2025
-                                    </div>
-                                </div>
-                            </div>
+                                            <div
+                                                style="position: absolute; bottom: 0.25rem; right: 0.5rem; font-size: 0.8rem; font-weight: bold; color: #000;">
+                                                Version Date: 01/07/2025
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </td>
                     </tr>
                 </thead>
@@ -1308,7 +1311,12 @@
         function toggleSpeechToText(targetId, btnElement) {
             const rec = getSpeechRecognition();
             if (!rec) {
-                alert("Speech recognition is not supported in your browser. Please use Chrome, Edge, or Safari.");
+                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+                if (isIOS) {
+                    alert("Apple restricts speech recognition to the Safari browser on iOS. Please open this page in Safari to use dictation.");
+                } else {
+                    alert("Speech recognition is not supported in your browser. Please use Chrome, Edge, or Safari.");
+                }
                 return;
             }
 
