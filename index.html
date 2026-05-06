@@ -1242,67 +1242,80 @@
         let originalText = '';
         let isManuallyStopped = false;
 
-        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            recognition = new SpeechRecognition();
-            recognition.continuous = true;
-            recognition.interimResults = true;
-            recognition.lang = 'en-AU';
+        function getSpeechRecognition() {
+            if (recognition) return recognition;
 
-            recognition.onresult = function (event) {
-                let finalTranscript = '';
-                let interimTranscript = '';
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                
+                // iOS/Safari fix: continuous=true completely breaks SpeechRecognition on Apple devices.
+                const isApple = /iPad|iPhone|iPod|Macintosh/i.test(navigator.userAgent);
+                recognition.continuous = !isApple; 
+                recognition.interimResults = true;
+                recognition.lang = 'en-AU';
 
-                for (let i = event.resultIndex; i < event.results.length; ++i) {
-                    if (event.results[i].isFinal) {
-                        finalTranscript += event.results[i][0].transcript;
-                    } else {
-                        interimTranscript += event.results[i][0].transcript;
-                    }
-                }
+                recognition.onresult = function (event) {
+                    let finalTranscript = '';
+                    let interimTranscript = '';
 
-                if (activeMicBtn) {
-                    const targetId = activeMicBtn.getAttribute('data-target');
-                    const targetInput = document.getElementById(targetId);
-
-                    if (finalTranscript) {
-                        originalText += finalTranscript;
-                        if (!originalText.endsWith(' ')) {
-                            originalText += ' ';
+                    for (let i = event.resultIndex; i < event.results.length; ++i) {
+                        if (event.results[i].isFinal) {
+                            finalTranscript += event.results[i][0].transcript;
+                        } else {
+                            interimTranscript += event.results[i][0].transcript;
                         }
                     }
 
-                    targetInput.value = originalText + interimTranscript;
-                }
-            };
+                    if (activeMicBtn) {
+                        const targetId = activeMicBtn.getAttribute('data-target');
+                        const targetInput = document.getElementById(targetId);
 
-            recognition.onerror = function (event) {
-                console.error('Speech recognition error', event.error);
-                if (event.error === 'not-allowed') {
-                    alert("Microphone access was denied. Please allow microphone permissions in your browser.");
-                }
-            };
+                        if (finalTranscript) {
+                            originalText += finalTranscript;
+                            if (!originalText.endsWith(' ')) {
+                                originalText += ' ';
+                            }
+                        }
 
-            recognition.onend = function () {
-                // Fix for Android Chrome where recognition stops automatically on pause
-                if (activeMicBtn && !isManuallyStopped) {
-                    try {
-                        recognition.start();
-                    } catch (e) {
-                        activeMicBtn.classList.remove('recording');
-                        activeMicBtn.innerHTML = '🎤 Dictate';
-                        activeMicBtn = null;
+                        targetInput.value = originalText + interimTranscript;
                     }
-                }
-            };
-        } else {
-            console.warn("Speech recognition not supported in this browser.");
+                };
+
+                recognition.onerror = function (event) {
+                    console.error('Speech recognition error', event.error);
+                    if (event.error === 'not-allowed') {
+                        alert("Microphone access was denied. Ensure you are using HTTPS and have granted permission.");
+                    }
+                };
+
+                recognition.onend = function () {
+                    if (activeMicBtn && !isManuallyStopped) {
+                        try {
+                            recognition.start();
+                        } catch (e) {
+                            activeMicBtn.classList.remove('recording');
+                            activeMicBtn.innerHTML = '🎤 Dictate';
+                            activeMicBtn = null;
+                        }
+                    }
+                };
+                return recognition;
+            }
+            return null;
         }
 
         function toggleSpeechToText(targetId, btnElement) {
-            if (!recognition) {
+            const rec = getSpeechRecognition();
+            if (!rec) {
                 alert("Speech recognition is not supported in your browser. Please use Chrome, Edge, or Safari.");
                 return;
+            }
+
+            // Apple devices require HTTPS for the microphone API. Warn the user if they are testing locally without it.
+            const isApple = /iPad|iPhone|iPod|Macintosh/i.test(navigator.userAgent);
+            if (isApple && window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') {
+                console.warn("Apple devices require a secure HTTPS connection for dictation.");
             }
 
             if (activeMicBtn === btnElement) {
@@ -1310,13 +1323,13 @@
                 activeMicBtn.classList.remove('recording');
                 activeMicBtn.innerHTML = '🎤 Dictate';
                 activeMicBtn = null;
-                try { recognition.stop(); } catch (e) { }
+                try { rec.stop(); } catch (e) { }
             } else {
                 if (activeMicBtn) {
                     isManuallyStopped = true;
                     activeMicBtn.classList.remove('recording');
                     activeMicBtn.innerHTML = '🎤 Dictate';
-                    try { recognition.stop(); } catch (e) { }
+                    try { rec.stop(); } catch (e) { }
                 }
 
                 isManuallyStopped = false;
@@ -1332,7 +1345,7 @@
                 }
 
                 try {
-                    recognition.start();
+                    rec.start();
                 } catch (e) {
                     console.error("Recognition already started", e);
                 }
