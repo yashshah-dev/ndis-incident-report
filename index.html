@@ -273,6 +273,43 @@
             display: block;
         }
 
+        @media screen and (max-width: 768px) {
+            .grid-2, .grid-3, .grid-4 {
+                grid-template-columns: 1fr;
+            }
+            .header {
+                flex-direction: column !important;
+            }
+            .header > div {
+                width: 100% !important;
+                border-left: none !important;
+                padding: 1rem !important;
+            }
+            .header > div:first-child {
+                border-bottom: 2px solid #000;
+                justify-content: center !important;
+            }
+            .header > div:last-child {
+                position: static !important;
+            }
+            .header > div:last-child > div {
+                position: static !important;
+                text-align: center !important;
+                margin-bottom: 0.5rem;
+            }
+            .btn-mic {
+                margin-top: 0.5rem;
+                margin-left: 0;
+            }
+            .flex-between {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .flex-between > .btn-mic {
+                align-self: flex-start;
+            }
+        }
+
         @media screen {
             .print-textarea {
                 display: none !important;
@@ -1203,6 +1240,7 @@
         let recognition = null;
         let activeMicBtn = null;
         let originalText = '';
+        let isManuallyStopped = false;
 
         if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -1246,10 +1284,15 @@
             };
 
             recognition.onend = function () {
-                if (activeMicBtn) {
-                    activeMicBtn.classList.remove('recording');
-                    activeMicBtn.innerHTML = '🎤 Dictate';
-                    activeMicBtn = null;
+                // Fix for Android Chrome where recognition stops automatically on pause
+                if (activeMicBtn && !isManuallyStopped) {
+                    try {
+                        recognition.start();
+                    } catch (e) {
+                        activeMicBtn.classList.remove('recording');
+                        activeMicBtn.innerHTML = '🎤 Dictate';
+                        activeMicBtn = null;
+                    }
                 }
             };
         } else {
@@ -1263,12 +1306,20 @@
             }
 
             if (activeMicBtn === btnElement) {
+                isManuallyStopped = true;
+                activeMicBtn.classList.remove('recording');
+                activeMicBtn.innerHTML = '🎤 Dictate';
+                activeMicBtn = null;
                 try { recognition.stop(); } catch (e) { }
             } else {
                 if (activeMicBtn) {
+                    isManuallyStopped = true;
+                    activeMicBtn.classList.remove('recording');
+                    activeMicBtn.innerHTML = '🎤 Dictate';
                     try { recognition.stop(); } catch (e) { }
                 }
 
+                isManuallyStopped = false;
                 activeMicBtn = btnElement;
                 activeMicBtn.classList.add('recording');
                 activeMicBtn.innerHTML = '🛑 Stop';
