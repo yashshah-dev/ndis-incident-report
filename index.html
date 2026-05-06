@@ -1337,10 +1337,10 @@
                 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
                 recognition = new SpeechRecognition();
                 
-                // iOS/Safari fix: continuous=true completely breaks SpeechRecognition on iOS.
-                // Mac desktop browsers handle continuous fine, so we specifically target iOS.
-                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-                recognition.continuous = !isIOS; 
+                // Mobile fix: continuous=true is buggy on Android (repeats words) and breaks on iOS.
+                // Desktop browsers handle continuous fine.
+                const isMobile = /Android|iPad|iPhone|iPod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+                recognition.continuous = !isMobile; 
                 recognition.interimResults = true;
                 recognition.lang = 'en-AU';
 
@@ -1393,23 +1393,30 @@
 
                 recognition.onend = function () {
                     if (activeMicBtn && !isManuallyStopped) {
-                        // Update originalText to include the final transcript from the session that just ended
-                        const targetId = activeMicBtn.getAttribute('data-target');
-                        if (targetId) {
-                            const targetInput = document.getElementById(targetId);
-                            originalText = targetInput.value;
-                            if (originalText && !originalText.endsWith(' ') && !originalText.endsWith('\n')) {
-                                originalText += ' ';
+                        // Small delay before restart helps stability on some mobile browsers
+                        setTimeout(() => {
+                            if (!activeMicBtn || isManuallyStopped) return;
+                            
+                            const targetId = activeMicBtn.getAttribute('data-target');
+                            if (targetId) {
+                                const targetInput = document.getElementById(targetId);
+                                originalText = targetInput.value;
+                                if (originalText && !originalText.endsWith(' ') && !originalText.endsWith('\n')) {
+                                    originalText += ' ';
+                                }
                             }
-                        }
 
-                        try {
-                            recognition.start();
-                        } catch (e) {
-                            activeMicBtn.classList.remove('recording');
-                            activeMicBtn.innerHTML = '🎤 Dictate';
-                            activeMicBtn = null;
-                        }
+                            try {
+                                recognition.start();
+                            } catch (e) {
+                                // If it fails to restart, reset the button state
+                                if (activeMicBtn) {
+                                    activeMicBtn.classList.remove('recording');
+                                    activeMicBtn.innerHTML = '🎤 Dictate';
+                                    activeMicBtn = null;
+                                }
+                            }
+                        }, 100);
                     }
                 };
                 return recognition;
